@@ -1,0 +1,118 @@
+//Hello.java
+
+package DSPrac;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Hello extends Remote
+{
+    String sayHello(String name) throws RemoteException;
+}
+
+
+//HelloImpl.java
+
+package DSPrac;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class HelloImpl extends UnicastRemoteObject implements Hello
+{
+    protected HelloImpl() throws RemoteException
+    {
+        super();
+    }
+
+    public synchronized String sayHello(String name) throws RemoteException
+    {
+        System.out.println("Request received from client: " + name);
+
+        try
+        {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        return "Hello " + name + ", response from server!";
+    }
+}
+
+
+//Server.java
+
+package DSPrac;
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class Server
+{
+    public static void main(String[] args)
+    {
+        try
+        {
+            HelloImpl obj = new HelloImpl();
+
+            Registry registry = LocateRegistry.createRegistry(1099);
+
+            registry.rebind("HelloService", obj);
+
+            System.out.println("Server is running...");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+//Client.java
+
+package DSPrac;
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class Client implements Runnable
+{
+    private String name;
+
+    public Client(String name)
+    {
+        this.name = name;
+    }
+
+    public void run()
+    {
+        try
+        {
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+
+            Hello stub = (Hello) registry.lookup("HelloService");
+
+            String response = stub.sayHello(name);
+
+            System.out.println("Server response: " + response);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        for (int i = 1; i <= 5; i++)
+        {
+            new Thread(new Client("Client-" + i)).start();
+        }
+    }
+}
+
+//Run the Server file first then run the Client file.
