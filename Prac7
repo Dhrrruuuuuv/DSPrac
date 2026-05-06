@@ -1,0 +1,312 @@
+//index.html
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Rock Paper Scissors</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Rock Paper Scissors Game</h1>
+
+    <div class="choice">
+        <p id="user-choice-para">
+            User Choice:
+        </p>
+
+        <p id="computer-choice-para">
+            Computer Choice:
+        </p>
+    </div>
+
+    <p class="result" id="result-para">
+        Result:
+    </p>
+
+    <div class="count">
+        <p id="games_count_para">
+            Games Played: 0
+        </p>
+
+        <p id="user_score_para">
+            Your Wins: 0
+        </p>
+
+        <p id="computer_score_para">
+            Computer Wins: 0
+        </p>
+
+        <p id="games_draw_para">
+            Games Draw: 0
+        </p>
+    </div>
+
+    <div class="user-options">
+
+        <button onclick="playGame('rock')">
+            Rock
+        </button>
+
+        <button onclick="playGame('paper')">
+            Paper
+        </button>
+
+        <button onclick="playGame('scissors')">
+            Scissors
+        </button>
+
+    </div>
+
+    <br><br>
+
+    <div class="reset">
+        <button onclick="resetGame()">
+            Reset Game
+        </button>
+    </div>
+
+    <script src="main.js"></script>
+
+</body>
+</html>
+
+
+//style.css
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: monospace;
+    background-color: rgb(72, 193, 197);
+}
+
+h1{
+    text-align: center;
+    padding-top: 20px;
+    color: white;
+}
+
+.choice{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+    font-weight: bold;
+    font-size: 20px;
+    gap: 30px;
+}
+
+.result{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    font-weight: bold;
+    font-size: 24px;
+    color: white;
+}
+
+.user-options{
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.user-options button{
+    height: 120px;
+    width: 160px;
+
+    font-size: 25px;
+
+    border: 2px solid white;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    background-color: rgb(223, 138, 166);
+
+    color: white;
+
+    transition: 0.3s;
+}
+
+.user-options button:hover{
+    transform: scale(1.05);
+}
+
+.count{
+    text-align: center;
+
+    font-size: 20px;
+
+    display: flex;
+
+    justify-content: center;
+
+    font-weight: bold;
+
+    padding: 20px;
+
+    gap: 40px;
+
+    flex-wrap: wrap;
+}
+
+.reset{
+    display: flex;
+    justify-content: center;
+}
+
+.reset button{
+    height: 45px;
+    width: 140px;
+
+    border: 2px solid white;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    background-color: cornflowerblue;
+
+    color: white;
+}
+
+//main.js
+
+let gamesPlayed = 0;
+let userWins = 0;
+let computerWins = 0;
+let gameDraw = 0;
+
+const userChoicePara =
+    document.getElementById("user-choice-para");
+
+const computerChoicePara =
+    document.getElementById("computer-choice-para");
+
+const resultPara =
+    document.getElementById("result-para");
+
+const gamesCount =
+    document.getElementById("games_count_para");
+
+const userScore =
+    document.getElementById("user_score_para");
+
+const computerScore =
+    document.getElementById("computer_score_para");
+
+const gamesDraw =
+    document.getElementById("games_draw_para");
+
+function playGame(userChoice)
+{
+    let options = ["rock", "paper", "scissors"];
+
+    const randomNum =
+        Math.floor(Math.random() * 3);
+
+    let computerChoice =
+        options[randomNum];
+
+    userChoicePara.innerText =
+        "User Choice: " + userChoice;
+
+    computerChoicePara.innerText =
+        "Computer Choice: " + computerChoice;
+
+    if (computerChoice === userChoice)
+    {
+        resultPara.innerText =
+            "Result: It's a Draw!";
+
+        gameDraw++;
+    }
+
+    else if (
+        (userChoice === "rock" &&
+         computerChoice === "scissors")
+
+        ||
+
+        (userChoice === "paper" &&
+         computerChoice === "rock")
+
+        ||
+
+        (userChoice === "scissors" &&
+         computerChoice === "paper")
+    )
+    {
+        resultPara.innerText =
+            "Result: You WON!";
+
+        userWins++;
+    }
+
+    else
+    {
+        resultPara.innerText =
+            "Result: You LOST!";
+
+        computerWins++;
+    }
+
+    gamesPlayed++;
+
+    gamesCount.innerText =
+        "Games Played: " + gamesPlayed;
+
+    userScore.innerText =
+        "Your Wins: " + userWins;
+
+    computerScore.innerText =
+        "Computer Wins: " + computerWins;
+
+    gamesDraw.innerText =
+        "Games Draw: " + gameDraw;
+}
+
+function resetGame()
+{
+    gamesPlayed = 0;
+    userWins = 0;
+    computerWins = 0;
+    gameDraw = 0;
+
+    gamesCount.innerText =
+        "Games Played: 0";
+
+    userScore.innerText =
+        "Your Wins: 0";
+
+    computerScore.innerText =
+        "Computer Wins: 0";
+
+    gamesDraw.innerText =
+        "Games Draw: 0";
+
+    userChoicePara.innerText =
+        "User Choice:";
+
+    computerChoicePara.innerText =
+        "Computer Choice:";
+
+    resultPara.innerText =
+        "Result:";
+}
