@@ -1,0 +1,146 @@
+//Prac3 in C
+
+#include <mpi.h>
+#include <stdio.h>
+
+int main(int argc, char *argv[])
+{
+    int rank, size;
+
+    int N = 8;
+
+    int arr[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+    int local_sum = 0;
+    int total_sum = 0;
+
+    int elements_per_process;
+
+    MPI_Init(&argc, &argv);
+
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    elements_per_process = N / size;
+
+    int start = rank * elements_per_process;
+
+    int end = start + elements_per_process;
+
+    printf("Process %d handling elements from index %d to %d\n",
+           rank, start, end - 1);
+
+    for (int i = start; i < end; i++)
+    {
+        local_sum += arr[i];
+    }
+
+    printf("Process %d local sum = %d\n",
+           rank, local_sum);
+
+    MPI_Reduce(&local_sum,
+               &total_sum,
+               1,
+               MPI_INT,
+               MPI_SUM,
+               0,
+               MPI_COMM_WORLD);
+
+    if (rank == 0)
+    {
+        printf("\nTotal Sum = %d\n", total_sum);
+    }
+
+    MPI_Finalize();
+
+    return 0;
+}
+
+//To be written in the terminal.
+
+mpicc mpi_sum.c -o mpi_sum
+
+mpirun -np 4 mpi_sum
+or
+mpirun -np 4 mpi_sum
+
+
+//Prac3 in Java
+
+package DSPrac3;
+
+class SumThread extends Thread
+{
+    int[] arr;
+    int start;
+    int end;
+
+    int localSum = 0;
+
+    public SumThread(int[] arr, int start, int end)
+    {
+        this.arr = arr;
+        this.start = start;
+        this.end = end;
+    }
+
+    public void run()
+    {
+        System.out.println(
+                "Thread handling elements from index "
+                        + start + " to " + (end - 1));
+
+        for (int i = start; i < end; i++)
+        {
+            localSum += arr[i];
+        }
+
+        System.out.println(
+                "Local Sum = " + localSum);
+    }
+
+    public int getLocalSum()
+    {
+        return localSum;
+    }
+}
+
+public class Ditributedum {
+    public static void main(String[] args)
+            throws InterruptedException
+    {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8};
+
+        int numberOfThreads = 4;
+
+        int elementsPerThread =
+                arr.length / numberOfThreads;
+
+        SumThread[] threads =
+                new SumThread[numberOfThreads];
+
+        int totalSum = 0;
+
+        for (int i = 0; i < numberOfThreads; i++)
+        {
+            int start = i * elementsPerThread;
+
+            int end = start + elementsPerThread;
+
+            threads[i] =
+                    new SumThread(arr, start, end);
+
+            threads[i].start();
+        }
+
+        for (int i = 0; i < numberOfThreads; i++)
+        {
+            threads[i].join();
+
+            totalSum += threads[i].getLocalSum();
+        }
+
+        System.out.println("\nTotal Sum = " + totalSum);
+    }
+}
