@@ -186,6 +186,7 @@ h1{
     color: white;
 }
 
+
 //main.js
 
 let gamesPlayed = 0;
